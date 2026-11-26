@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Authentication</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: lightblue;
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            width: 350px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 8px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>User Authentication</h2>
+
+        <h3>Register</h3>
+
+        <input type="text" id="name" placeholder="Enter Name">
+        <input type="email" id="email" placeholder="Enter Email">
+        <input type="password" id="password" placeholder="Enter Password">
+
+        <br>
+
+        <button onclick="register()">Register</button>
+
+        <hr>
+
+        <h3>Login</h3>
+
+        <input type="email" id="loginEmail" placeholder="Enter Email">
+        <input type="password" id="loginPassword" placeholder="Enter Password">
+
+        <br>
+
+        <button onclick="login()">Login</button>
+
+        <hr>
+
+        <h3>Profile</h3>
+
+        <button onclick="getProfile()">View Profile</button>
+
+        <button onclick="logout()">Logout</button>
+
+        <p id="message"></p>
+
+    </div>
+
+    <script>
+
+        // REGISTER
+        async function register() {
+
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            let response = await fetch('/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password
+                })
+            });
+
+            let data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+        }
+
+        // LOGIN
+        async function login() {
+
+            let email = document.getElementById("loginEmail").value;
+            let password = document.getElementById("loginPassword").value;
+
+            let response = await fetch('/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            let data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+        }
+
+        // VIEW PROFILE
+        async function getProfile() {
+
+            let response = await fetch('/profile', {
+                credentials: 'same-origin'
+            });
+
+            let data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+        }
+
+        // LOGOUT
+        async function logout() {
+
+            let response = await fetch('/auth/logout', {
+                method: 'POST',
+                credentials: 'same-origin'
+            });
+
+            let data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+        }
+
+    </script>
+
+</body>
+</html>
